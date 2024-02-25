@@ -1,27 +1,23 @@
 import { Link } from "react-router-dom";
-import HeaderNavBar from "./HeadNavBar";
+import { FiUser } from "react-icons/fi";
+import { GiHamburgerMenu, GiWhiteBook } from "react-icons/gi";
 
 function Header() {
   return (
     <header>
-      <div className="container d-flex position-relative header">
-        <div className="head-of-header d-flex flex-row">
-          <Link className="logo">
-            <img
-              className="invert-color"
-              width="42px"
-              height="42px"
-              src="/images/logo-simple.svg"
-              alt="로고"
-            />
-            <div className="siteTitle fs-3">SKKU SOSD</div>
-          </Link>
-          <div className="col-lg-9 col-11 d-flex justify-content-end">
-            <div className="on-desktop justify-content-between flex-grow-1 gap-3">
-              <HeaderNavBar />
-            </div>
-          </div>
-        </div>
+      <div className="w-100 p-4 mb-2 bg-success bg-opacity-50 text-white d-flex justify-content-between align-items-center">
+        <GiHamburgerMenu size={30} style={{ cursor: "pointer" }} />
+        <Link
+          className="d-flex flex-row align-items-center"
+          style={{ textDecoration: "none" }}
+          to={"/"}
+        >
+          <GiWhiteBook size={30} color="white" className="me-1" />
+          <div className="fs-3 text-white">SKKU Library</div>
+        </Link>
+        <Link style={{ textDecoration: "none" }} to={"/user"}>
+          <FiUser size={30} color="white" />
+        </Link>
       </div>
     </header>
   );
