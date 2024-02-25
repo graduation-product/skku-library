@@ -5,7 +5,9 @@ function LoginPage() {
   return (
     <main>
       <Header />
-      <Outlet />
+      <main className="w-100">
+        <Outlet />
+      </main>
       <Footer />
     </main>
   );
