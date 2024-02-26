@@ -5,7 +5,7 @@ function LoginPage() {
   return (
     <main>
       <Header />
-      <main className="w-100">
+      <main className="col-12 my-4 d-flex flex-row justify-content-center">
         <Outlet />
       </main>
       <Footer />

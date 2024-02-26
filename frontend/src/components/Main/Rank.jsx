@@ -1,8 +1,8 @@
-function Main() {
+function Rank() {
   return (
     <div className="col-9 d-flex justify-content-center">
-      <div>메인입니다.</div>
+      <div>랭킹입니다.</div>
     </div>
   );
 }
-export default Main;
+export default Rank;
