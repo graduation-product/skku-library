@@ -5,6 +5,7 @@ USE GP_DB1;
 
 CREATE TABLE IF NOT EXISTS USER_TB(
     USER_ID             INT             NOT NULL,
+    USER_NUMBER         VARCHAR(13)     NOT NULL,
     USER_EMAIL          VARCHAR(45)     NOT NULL,
     USER_NAME           VARCHAR(45)     NOT NULL,
     USER_PASSWORD       VARCHAR(45)     NOT NULL,
@@ -30,8 +31,8 @@ CREATE TABLE IF NOT EXISTS USER_BOOKLIST_TB(
     PRIMARY KEY(USER_ID, BOOK_ID)
 );
 
-INSERT INTO USER_TB VALUES(1, "rladbgus@g.skku.edu", "김유현", "1234");
-INSERT INTO USER_TB VALUES(2, "dbrhkdgh@g.skku.edu", "유광호", "1234");
+INSERT INTO USER_TB VALUES(1, "2019314665", "rladbgus@g.skku.edu", "김유현", "1234");
+INSERT INTO USER_TB VALUES(2, "2019310123", "dbrhkdgh@g.skku.edu", "유광호", "1234");
 
 INSERT INTO BOOK_TB VALUES(1, "(EBS 다큐프라임) 자본주의 : 금융·소비·돈에 관한 33가지 비밀 / EBS <자본주의> 제작팀 지음 ; EBS Media 기획", "한국교육방송공사; 자본주의 제작팀; EBS Media", "가나출판사 : 가나문화콘텐츠", "9788957365793", "330.122 ㅎ155ㅈ", "https://image.yes24.com/goods/11081680/XL", "economics", 0);
 INSERT INTO BOOK_TB VALUES(2, "컴퓨터시스템", "Bryant, Randal; O'Hallaron, David Richard; 김형신", "Pearson", "9791185475219", "004 B915c1 2016", "https://image.yes24.com/goods/31950404/XL", "computer", 3);

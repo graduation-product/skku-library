@@ -1,6 +1,6 @@
 const express = require('express');
-const mysql      = require('mysql');
-const dbconfig   = require('../public/javascripts/database.js');
+const mysql = require('mysql');
+const dbconfig = require('../public/javascripts/database.js');
 const cors = require("cors");
 const conn = mysql.createConnection(dbconfig);
 const router = express.Router();
@@ -9,64 +9,62 @@ router.use(cors());
 router.use(express.json());
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+router.get('/', function (req, res, next) {
+    res.send('respond with a resource');
 });
 
 ///////////////
 // login API //
 ///////////////
-// REQUEST DATA:
+// REQUEST:
 //   body:{
-//      email:       -email-(string),
-//      password:    -pswd-(string),
+//      user_number:  -user number-(string),
+//      password:     -password-(string),
 //   }
 // 
-// RESULT DATA
-// success: login success
-//    return => {result: "success"(string), idx: (int)}
-// fail_NA: that id doesnt exist
-//    return => {result: "fail_NA"(string)}
-// fail_WP: password is wrong
-//    return => {result: "fail_WP"(string)}
+// RESULT:
+// 성공 시 => {result: "success"(string), user_id: -user id-(int)}
+// 실패: 학번 오류(wrong number) => {result: "fail_WN"(string)}
+// 실패: 비번 오류(wrong password) => {result: "fail_WP"(string)}
+
 router.post('/login', (req, res) => {
-  console.log(req.body);
-  const email = req.body.email;
-  const pswd = req.body.password;
+    console.log(req.body);
 
-  var sql = "select count(*) as cnt from users where email = ?";
-  var params = [email];
+    const user_number = req.body.user_number;
+    const pswd = req.body.password;
 
-  conn.query(sql, params, (error, rows) => {
-      if(error)
-        throw error;
-      
-      if(rows[0].cnt == 1){
-        var in_sql = "select * from users where email = ?";
-        var in_params = [email];
-        conn.query(in_sql, in_params, (error, rows) => {
-          if(error)
+    var sql = "SELECT COUNT(*) AS CNT FROM USER_TB WHERE USER_NUMBER=?";
+    var params = [user_number];
+
+    conn.query(sql, params, (error, rows) => {
+        if (error)
             throw error;
-          
-          var cur_idx = rows[0].idx;
-          var cur_pswd = rows[0].pswd;
 
-          if(cur_pswd === pswd){
-            // success
-            res.status(200).json({result:"success", idx:cur_idx});
-          }
-          else{
+        if (rows[0].cnt == 1) {
+            var in_sql = "SELECT USER_ID, USER_PASSWORD FROM USER_TB WHERE USER_NUMBER=?";
+            var in_params = [user_number];
+            conn.query(in_sql, in_params, (error, rows) => {
+                if (error)
+                    throw error;
+
+                var cur_id = rows[0].user_id;
+                var cur_pswd = rows[0].user_password;
+
+                if (cur_pswd === pswd) {
+                    // success
+                    res.status(200).json({ result: "success", user_id: cur_id });
+                }
+                else {
+                    // fail
+                    res.status(200).json({ result: "fail_WP" });
+                }
+            });
+        }
+        else {
             // fail
-            res.status(200).json({result:"fail_WP"});
-          }
-        });
-      }
-      else{
-        // fail
-        res.status(200).json({result:"fail_NA"});
-      }
-    }
-  );
+            res.status(200).json({ result: "fail_WN" });
+        }
+    });
 });
 
 
