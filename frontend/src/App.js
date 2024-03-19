@@ -3,9 +3,10 @@ import LoginPage from "./routes/LoginPage";
 import MainPage from "./routes/MainPage";
 import Main from "./components/Main/Main";
 import Rank from "./components/Main/Rank";
-import Search from "./components/Main/Search";
+import Recommend from "./components/Main/Recommend";
 import Review from "./components/Main/Review";
 import ReviewPage from "./components/Main/ReviewPage";
+import BookPage from "./components/Main/BookPage";
 
 function App() {
   return (
@@ -13,9 +14,10 @@ function App() {
       <Route path="/" element={<MainPage />}>
         <Route path="" element={<Main />} />
         <Route path="rank" element={<Rank />} />
-        <Route path="search" element={<Search />} />
+        <Route path="recommend" element={<Recommend />} />
         <Route path="review" element={<Review />} />
         <Route path="review/:reviewid" element={<ReviewPage />} />
+        <Route path="book/:bookid" element={<BookPage />} />
       </Route>
       <Route path="/login" element={<LoginPage />} />
     </Routes>
