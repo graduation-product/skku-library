@@ -1,5 +1,5 @@
-import Header from "../components/Navbar/Header/Header";
-import Footer from "../components/Navbar/Footer/Footer";
+import Header from "../components/Navbar/Header";
+import Footer from "../components/Navbar/Footer";
 import { Outlet } from "react-router-dom";
 function LoginPage() {
   return (

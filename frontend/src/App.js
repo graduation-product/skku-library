@@ -5,6 +5,7 @@ import Main from "./components/Main/Main";
 import Rank from "./components/Main/Rank";
 import Search from "./components/Main/Search";
 import Review from "./components/Main/Review";
+import ReviewPage from "./components/Main/ReviewPage";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="rank" element={<Rank />} />
         <Route path="search" element={<Search />} />
         <Route path="review" element={<Review />} />
+        <Route path="review/:reviewid" element={<ReviewPage />} />
       </Route>
       <Route path="/login" element={<LoginPage />} />
     </Routes>
