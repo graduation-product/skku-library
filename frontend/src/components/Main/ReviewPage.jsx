@@ -15,7 +15,7 @@ function ReviewPage() {
   };
   return (
     <div className="col-9 d-flex flex-column">
-      <div className="community-nav d-flex">
+      <div className="d-flex justify-content-between align-items-center pb-4">
         <div>
           <button type="button" className="btn-back" onClick={() => back()}>
             <BsChevronLeft
@@ -24,7 +24,7 @@ function ReviewPage() {
             리뷰
           </button>
         </div>
-        <div className="board-name"> 게시판</div>
+        <div className="fs-3 fw-bold"> 게시판</div>
         <div>
           <button
             type="button"
@@ -38,19 +38,11 @@ function ReviewPage() {
           </button>
         </div>
       </div>
-      <div className="article-design">
-        <div className="d-flex justify-content-between align-items-end">
-          <div id="article-writer">
-            <span className="article-info">작성자</span>
-          </div>
-          <div id="article-writer" style={{ flexGrow: "0.3" }}>
-            <span className="article-pubdate">날짜</span>
-          </div>
-        </div>
-        <div className="divider"></div>
-        <div className="article-info article-view">
-          <span className="hidden"></span>
-          <span>조회수</span>
+      <div className="divider"></div>
+      <div className="d-flex flex-column">
+        <div className="d-flex justify-content-end align-items-center py-2">
+          <span className="fs-6 pe-2">작성자</span>
+          <span className="fs-6 pe-2">날짜</span>
         </div>
         <div className="article-body">
           글

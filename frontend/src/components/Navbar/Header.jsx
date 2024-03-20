@@ -34,11 +34,11 @@ function Header() {
                 <div className="fs-3 text-white">도서 랭킹</div>
               )}
             </Link>
-            <Link style={{ textDecoration: "none" }} to={"/search"}>
-              {path === "/search" ? (
-                <div className="fs-3 text-secondary fw-bold">도서 검색</div>
+            <Link style={{ textDecoration: "none" }} to={"/recommend"}>
+              {path === "/recommend" ? (
+                <div className="fs-3 text-secondary fw-bold">도서 추천</div>
               ) : (
-                <div className="fs-3 text-white">도서 검색</div>
+                <div className="fs-3 text-white">도서 추천</div>
               )}
             </Link>
             <Link style={{ textDecoration: "none" }} to={"/review"}>
