@@ -11,7 +11,6 @@ const client_secret = "yU4uS9vEIM";
 router.use(cors());
 router.use(express.json());
 
-/* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('books root');
 });

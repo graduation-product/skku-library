@@ -8,9 +8,8 @@ const router = express.Router();
 router.use(cors());
 router.use(express.json());
 
-/* GET users listing. */
 router.get('/', function (req, res, next) {
-    res.send('respond with a resource');
+    res.send('users root');
 });
 
 ///////////////
