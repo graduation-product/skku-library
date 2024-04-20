@@ -122,6 +122,7 @@ router.get('/search', (req, res) => {
 // RESULT
 // {book_id에 해당하는 책 정보}
 // 
+
 router.post('/detail', (req, res) => {
     console.log(req.body);
     const book_id = req.body.book_id;
@@ -137,6 +138,63 @@ router.post('/detail', (req, res) => {
         throw error;
         
         res.status(200).json(rows[0]);
+    });
+});
+
+////////////////////////
+// recommendation API //
+////////////////////////
+// REQUEST:
+//   body:{
+//      user_id:   -user_id-(int),
+//      tag:       -tag-(string)
+//   }
+// 
+// RESULT
+// [{추천 책 정보1}, {추천 책 정보2}, {추천 책 정보3}, ...]
+// 
+// NOTE
+//      - tag에는 book classifier 정보를 통한 태그
+//      - 태그 무시하고 모든 책에 대한 추천을 원할 경우 "전체" 기입
+//      - 태그가 여러 개라면 | 를 사용해서 붙이기
+//      - 태그가 여러 개일 시
+//          인문 철학 | 사회 문화 | 소설 | 수학 | 공학 | 경영 경제 | 컴퓨터
+//          순으로 붙여서 기입
+router.post('/recommend', (req, res) => {
+
+    const user_id = req.body.user_id;
+    const tag = req.body.tag;
+
+    var sql = "SELECT BOOK_ID FROM USER_BOOKLIST_TB WHERE USER_ID = ?";
+    var params = [user_id];
+
+    // 본인이 읽은 책 리스트
+    conn.query(sql, params, (error, rows) => {
+        if(error)
+            throw error;
+        
+        var arr = [];
+
+        for(var i = 0; i < rows.length; ++i){
+            arr.push(rows[i].BOOK_ID);
+        }
+        console.log(arr);
+        // 본인이 읽은 책을 읽은 다른 유저
+        var in_sql = "SELECT USER_ID FROM USER_BOOKLIST_TB WHERE BOOK_ID = ? and USER_ID <> " + user_id + ";";
+        var params = "";
+        arr.forEach((item) =>{
+            params += mysql.format(in_sql, item);
+        });
+
+        conn.query(in_sql, arr, (error, rows) => {
+            user_list = [];
+            console.log(rows);
+            for(var i = 0; i < rows.length; ++i){
+                user_list.push(rows[i].USER_ID);
+            }
+            console.log(user_list);
+            res.status(200).json(rows[0]);
+        });
     });
 });
 
