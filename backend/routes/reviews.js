@@ -5,109 +5,84 @@ const cors = require("cors");
 const conn = mysql.createConnection(dbconfig);
 const router = express.Router();
 
-const client_id = "zM4GOZVdxFujDTQSKGSO";
-const client_secret = "yU4uS9vEIM";
-
 router.use(cors());
 router.use(express.json());
 
-/* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('books root');
+  res.send('reviews root');
 });
 
-/////////////////
-// ranking API //
-/////////////////
+/////////////////////////
+// review register API //
+/////////////////////////
 // REQUEST:
 //   body:{
-//      tag:       -tag-(string),
+//      author:     -review author-(int),
+//      title:      -review title-(string),
+//      content:    -review content-(string),
 //   }
 // 
 // RESULT
-// [ BOOK_TB 에 있는 데이터 리스트 ]
-//      - 데이터는 대출 수 기준으로 내림차순 정렬
-//
-// NOTE
-// tag에 "none" 을 입력하면 전체 출력
-router.post('/ranking', (req, res) => {
+// {result: "success"(string)}
+
+router.post('/register', (req, res) => {
     console.log(req.body);
-    const tag = req.body.tag;
+    const auth = req.body.author;
+    const title = req.body.title;
+    const content = req.body.content;
 
-    var sql;
-    var params = [tag];
+    var sql = "SELECT MAX(REVIEW_ID) AS MRI FROM REVIEW_TB";
 
-    if(tag === "none"){
-        sql = "SELECT * FROM BOOK_TB ORDER BY BOOK_BORROWED DESC";
-    }
-    else{
-        sql = "SELECT * FROM BOOK_TB WHERE BOOK_TAG=? ORDER BY BOOK_BORROWED DESC";
-    }
-
-    // console.log("loading..\n");
-    conn.query(sql, params, (error, rows) => {
+    conn.query(sql, (error, rows) => {
         if(error)
-        throw error;
+            throw error;
         
-        res.status(200).send(rows);
+        var cur_max = rows[0].MRI
+        var in_sql = "INSERT INTO REVIEW_TB VALUES(?, ?, ?, ?, NOW(), ?)";
+        var in_params = [cur_max + 1, auth, title, content, 0];
+
+        conn.query(in_sql, in_params, (error, rows) => {
+            if(error)
+                throw error;
+            
+            res.status(200).send({"result" : "success"});
+        });
     });
 });
 
 
-////////////////
-// search API //
-////////////////
+/////////////////////
+// review list API //
+/////////////////////
 // REQUEST:
 //   body:{
-//      query:       -query-(string),
+//     
 //   }
 // 
 // RESULT
-// {result: -query를 네이버에 검색한 결과 리스트-}
+// [{리뷰 1}, {리뷰 2}, ...]
 //
 // NOTE
-//      - 기본 10개 보여줌
-//      - 리스트의 원소, 즉 하나의 책에 대해서
-//          * 제목(title)
-//          * 이미지(image)
-//          * 저자(author)
-//          * 출판사(publisher)
-//          * ISBN(isbn)
+//      - 리뷰 전체 리스트를 보여줌
+//      - 리스트의 원소, 즉 하나의 리뷰에 대해서
+//          * 리뷰 인덱스(REVIEW_ID)
+//          * 저자 번호(REVIEW_AUTHOR)
+//          * 저자 이름(REVIEW_AUTHOR_NAME)
+//          * 제목(REVIEW_TITLE)
+//          * 내용(REVIEW_CONTENT)
+//          * 날짜(REVIEW_DATE)
+//          * 좋아요 수(REVIEW_LIKE)
 //        정보를 가지고 있음
 
-router.get('/search', (req, res) => {
-    var api_url = 'https://openapi.naver.com/v1/search/book.json?display=10&query=' + encodeURI(req.body.query); // json 결과
-    var request = require('request');
-    var options = {
-        url: api_url,
-        headers: {
-            'X-Naver-Client-Id': client_id, 
-            'X-Naver-Client-Secret': client_secret
-        }
-    };
-    request.get(options, (error, response, body) => {
-        // console.log(JSON.parse(body).items);
-        if (!error && response.statusCode == 200) {
-            var ret = new Array();
+router.post('/list', (req, res) => {
 
-            for(item of JSON.parse(body).items){
-                var tmp = new Object();
+    var sql = "SELECT * FROM REVIEW_TB";
 
-                tmp.title     = item.title;
-                tmp.image     = item.image;
-                tmp.author    = item.author;
-                tmp.publisher = item.publisher;
-                tmp.isbn      = item.isbn;
-
-                ret.push(tmp);
-            }
-            res.status(200).json({result: ret});
-            // res.status(200).send(body.items);
-        }
-        else {
-            res.status(response.statusCode).end();
-            console.log('error = ' + response.statusCode);
-        }
+    conn.query(sql, (error, rows) => {
+        if(error)
+            throw error;
+        
+        res.status(200).json(rows);
     });
 });
 
@@ -117,20 +92,20 @@ router.get('/search', (req, res) => {
 /////////////////////
 // REQUEST:
 //   body:{
-//      book_id:       -book id-(int),
+//      review_id:       -review id-(int),
 //   }
 // 
 // RESULT
-// {book_id에 해당하는 책 정보}
+// {review_id에 해당하는 리뷰 정보}
 // 
 router.post('/detail', (req, res) => {
     console.log(req.body);
-    const book_id = req.body.book_id;
+    const review_id = req.body.review_id;
 
     var sql;
-    var params = [book_id];
+    var params = [review_id];
 
-    sql = "SELECT * FROM BOOK_TB WHERE BOOK_ID=?";
+    sql = "SELECT * FROM REVIEW_TB WHERE REVIEW_ID=?";
 
     // console.log("loading..\n");
     conn.query(sql, params, (error, rows) => {
