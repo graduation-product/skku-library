@@ -33,23 +33,31 @@ router.post('/register', (req, res) => {
     const book_title = req.body.book_title;
     const content = req.body.content;
 
-    var sql = "SELECT MAX(REVIEW_ID) AS MRI FROM REVIEW_TB";
+    var sql = "SELECT USER_NAME FROM USER_TB WHERE USER_ID = ?";
+    var params = [auth];
 
-    conn.query(sql, (error, rows) => {
-        if(error)
-            throw error;
+    conn.query(sql, params, (error, rows) => {
+        var in_sql = "SELECT MAX(REVIEW_ID) AS MRI FROM REVIEW_TB";
+        var auth_name = rows[0].USER_NAME;
         
-        var cur_max = rows[0].MRI
-        var in_sql = "INSERT INTO REVIEW_TB VALUES(?, ?, ?, ?, ?, NOW(), ?, ?)";
-        var in_params = [cur_max + 1, auth, title, book_title, content, 0, 0];
-
-        conn.query(in_sql, in_params, (error, rows) => {
+        conn.query(in_sql, (error, rows) => {
             if(error)
                 throw error;
             
-            res.status(200).send({"result" : "success"});
+            var cur_max = rows[0].MRI
+            var in_sql2 = "INSERT INTO REVIEW_TB VALUES(?, ?, ?, ?, ?, ?, NOW(), ?, ?)";
+            var in_params2 = [cur_max + 1, auth, auth_name, title, book_title, content, 0, 0];
+
+            conn.query(in_sql2, in_params2, (error, rows) => {
+                if(error)
+                    throw error;
+                
+                res.status(200).send({"result" : "success"});
+            });
         });
     });
+
+    
 });
 
 
@@ -92,7 +100,7 @@ router.post('/list', (req, res) => {
 
 
 /////////////////////
-// book detail API //
+// review detail API //
 /////////////////////
 // REQUEST:
 //   body:{
@@ -117,6 +125,58 @@ router.post('/detail', (req, res) => {
         throw error;
         
         res.status(200).json(rows[0]);
+    });
+});
+
+/////////////////////
+// like update API //
+/////////////////////
+// REQUEST:
+//   body:{
+//      review_id:       -review id-(int),
+//   }
+// 
+// RESULT
+//   {"result" : "success"}
+// 
+router.post('/like', (req, res) => {
+    const review_id = req.body.review_id;
+
+    var sql = "UPDATE REVIEW_TB SET REVIEW_LIKE = REVIEW_LIKE + 1 WHERE REIVEW_ID = ?";
+    var params = [review_id];
+
+
+    conn.query(sql, params, (error, rows) => {
+        if(error)
+            throw error;
+        
+        res.status(200).json({"result" : "success"});
+    });
+});
+
+/////////////////////
+// view update API //
+/////////////////////
+// REQUEST:
+//   body:{
+//      review_id:       -review id-(int),
+//   }
+// 
+// RESULT
+//   {"result" : "success"}
+// 
+router.post('/view', (req, res) => {
+    const review_id = req.body.review_id;
+
+    var sql = "UPDATE REVIEW_TB SET REVIEW_VIEW = REVIEW_VIEW + 1 WHERE REIVEW_ID = ?";
+    var params = [review_id];
+
+
+    conn.query(sql, params, (error, rows) => {
+        if(error)
+            throw error;
+        
+        res.status(200).json({"result" : "success"});
     });
 });
 
