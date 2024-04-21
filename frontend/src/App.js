@@ -7,6 +7,7 @@ import Recommend from "./components/Main/Recommend";
 import Review from "./components/Main/Review";
 import ReviewPage from "./components/Main/ReviewPage";
 import BookPage from "./components/Main/BookPage";
+import WritePage from "./components/Main/WritePage";
 
 function App() {
   return (
@@ -17,7 +18,8 @@ function App() {
         <Route path="recommend" element={<Recommend />} />
         <Route path="review" element={<Review />} />
         <Route path="review/:reviewid" element={<ReviewPage />} />
-        <Route path="book/:bookid" element={<BookPage />} />
+        <Route path="book" element={<BookPage />} />
+        <Route path="write" element={<WritePage />} />
       </Route>
       <Route path="/login" element={<LoginPage />} />
     </Routes>

@@ -1,70 +1,122 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginCheck, setLoginCheck] = useState(false); // 로그인 상태 체크
-
   const navigate = useNavigate();
+  const server_url = process.env.REACT_APP_SERVER_URL;
 
-  const handleLogin = async (event) => {
-    // 로그인 처리 로직을 구현합니다.
-    event.preventDefault();
-    await new Promise((r) => setTimeout(r, 1000));
+  const [inputId, setInputId] = useState("");
+  const [inputPw, setInputPw] = useState("");
+  const [isLogin, setIsLogin] = useState(false);
+  const [loginId, setLoginId] = useState("");
+  const [username, setUsername] = useState();
+  useEffect(() => {
+    const getUsername = async (id) => {
+      const postUrl = server_url + "/users/name";
+      try {
+        const response = await axios.post(postUrl, { user_id: id });
+        if (response.status === 200) {
+          setUsername(response.data.user_name);
+        }
+      } catch (error) {}
+    };
+    if (sessionStorage.getItem("id") !== null) {
+      setIsLogin(true);
+      setLoginId(sessionStorage.getItem("id"));
+      getUsername(sessionStorage.getItem("id"));
+    }
+  }, []);
+  const handleInputId = (e) => {
+    setInputId(e.target.value);
+  };
 
-    const response = await fetch("로그인 서버 주소", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    });
-    const result = await response.json();
-
-    if (response.status === 200) {
-      setLoginCheck(false);
-      // Store token in local storage
-      sessionStorage.setItem("token", result.token);
-      sessionStorage.setItem("email", result.email); // 여기서 userid를 저장합니다.
-      sessionStorage.setItem("role", result.role); // 여기서 role를 저장합니다.
-      sessionStorage.setItem("storeid", result.storeId); // 여기서 role를 저장합니다.
-      console.log("로그인성공, 이메일주소:" + result.email);
-      navigate("/"); // 로그인 성공시 홈으로 이동합니다.
+  const handleInputPw = (e) => {
+    setInputPw(e.target.value);
+  };
+  const onClickLogin = async () => {
+    if (inputId !== "" && inputPw !== "") {
+      const postUrl = server_url + "/users/login";
+      await axios
+        .post(postUrl, {
+          user_number: inputId,
+          password: inputPw,
+        })
+        .then((res) => {
+          console.log(res.data);
+          sessionStorage.setItem("id", res.data.user_id);
+          window.location.replace("http://localhost:3000/");
+        })
+        .catch((err) => {
+          alert(err);
+        });
+      alert("로그인 성공");
+      navigate("/");
     } else {
-      setLoginCheck(true);
+      alert("모든 내용을 입력해주세요");
     }
   };
 
-  return (
-    <div className="login-container">
-      <form className="login-form" onSubmit={handleLogin}>
-        <label htmlFor="username">이메일</label>
-        <input
-          type="text"
-          id="username"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+  const onClickLogOut = () => {
+    sessionStorage.clear();
+    window.location.reload();
+  };
 
-        <label htmlFor="password">비밀번호</label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {loginCheck && (
-          <label style={{ color: "red" }}>
-            이메일 혹은 비밀번호가 틀렸습니다.
-          </label>
-        )}
-        <button onClick={handleLogin}>로그인</button>
-      </form>
-    </div>
+  return (
+    <>
+      {isLogin === false ? (
+        <div className="w-100 h-100 d-flex flex-column justify-items-center align-items-center">
+          <h2 className="mb-4">Login</h2>
+          <div>
+            <div className="mb-3">
+              <label htmlFor="input_id" style={{ width: "40px" }}>
+                ID:
+              </label>
+              <input
+                type="text"
+                name="input_id"
+                value={inputId}
+                onChange={handleInputId}
+              />
+            </div>
+            <div>
+              <label htmlFor="input_pw" style={{ width: "40px" }}>
+                PW:
+              </label>
+              <input
+                type="password"
+                name="input_pw"
+                value={inputPw}
+                onChange={handleInputPw}
+              />
+            </div>
+          </div>
+          <Button
+            variant="outline-success"
+            className="my-4"
+            onClick={() => onClickLogin()}
+          >
+            로그인
+          </Button>
+        </div>
+      ) : (
+        <>
+          {username && (
+            <div className="d-flex flex-column">
+              <h3>안녕하세요 ! {username}님 </h3>
+              <Button
+                variant="outline-success"
+                className="my-4"
+                onClick={() => onClickLogOut()}
+              >
+                로그아웃
+              </Button>
+            </div>
+          )}
+        </>
+      )}
+    </>
   );
 }
 
