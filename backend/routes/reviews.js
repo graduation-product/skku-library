@@ -163,13 +163,22 @@ router.post('/like', (req, res) => {
                 if(error)
                     throw error;
 
-                res.status(200).json({"result" : "success"});
+                res.status(200).json({"result" : "success:like"});
             });
         }
         else{
-            res.status(200).json({"result" : "fail: duplicated"});
+          var in_sql = "UPDATE REVIEW_TB SET REVIEW_LIKE = REVIEW_LIKE - 1 WHERE REVIEW_ID = ?; DELETE FROM LIKE_TB WHERE USER_ID = ? AND REVIEW_ID = ?;";
+          var in_params = [review_id, user_id, review_id];
+
+          conn.query(in_sql, in_params, (error, rows) => {
+              if(error)
+                  throw error;
+
+              res.status(200).json({"result" : "success:dislike"});
+          });
         }
     });
+  });
 });
 
 /////////////////////
