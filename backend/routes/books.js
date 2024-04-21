@@ -233,8 +233,15 @@ router.post('/recommend', (req, res) => {
                     console.log(rows);
                     
                     var ret = [];
-                    for(var i = 0; i < rows.length; ++i){
-                        ret.push(rows[i][0]);
+                    var tag_box = ["인문 철학", "사회 문화", "소설", "수학", "공학", "경영 경제", "컴퓨터"];
+
+                    for(var i = 0; i < tag_box.length; ++i){
+                        for(var u = 0; u < rows.length; ++u){
+                            if(rows[u][0].BOOK_TAG === tag_box[i]){
+                                ret.push(rows[u][0]);
+                                break;
+                            }
+                        }
                     }
                     res.status(200).json(ret);
                     
