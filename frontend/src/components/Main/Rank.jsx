@@ -28,8 +28,12 @@ function Rank() {
   }, []);
 
   const navigate = useNavigate();
-  const handleClick = (id) => {
-    navigate("/book/" + id);
+  const handleClick = (BOOK_URL) => {
+    navigate("/book/", {
+      state: {
+        url: BOOK_URL,
+      },
+    });
   };
 
   return (
@@ -56,7 +60,7 @@ function Rank() {
                   key={book.BOOK_ID}
                   as="li"
                   className="d-flex justify-content-between align-items-start"
-                  onClick={() => handleClick(book.BOOK_ID)}
+                  onClick={() => handleClick(book.BOOK_URL)}
                   style={{ cursor: "pointer" }}
                 >
                   <div className="ms-2 me-auto">
@@ -78,7 +82,7 @@ function Rank() {
                     key={book.BOOK_ID}
                     as="li"
                     className="d-flex justify-content-between align-items-start"
-                    onClick={() => handleClick(book.BOOK_ID)}
+                    onClick={() => handleClick(book.BOOK_URL)}
                     style={{ cursor: "pointer" }}
                   >
                     <div className="ms-2 me-auto">
