@@ -157,9 +157,7 @@ router.post('/detail', (req, res) => {
 //      - tag에는 book classifier 정보를 통한 태그
 //      - 태그 무시하고 모든 책에 대한 추천을 원할 경우 "전체" 기입
 //      - 태그가 여러 개라면 | 를 사용해서 붙이기
-//      - 태그가 여러 개일 시
-//          인문 철학 | 사회 문화 | 소설 | 수학 | 공학 | 경영 경제 | 컴퓨터
-//          순으로 붙여서 기입
+//      - 예시)  "컴퓨터|공학|인문 철학"
 router.post('/recommend', (req, res) => {
 
     const user_id = req.body.user_id;
@@ -185,18 +183,14 @@ router.post('/recommend', (req, res) => {
         arr.forEach((item) =>{
             sqls += mysql.format(in_sql, item);
         });
-        console.log(sqls);
         conn.query(sqls, (error, rows) => {
             user_set = new Set();
             user_list = [];
-            console.log(rows);
             for(var i = 0; i < rows.length; ++i){
                 for(var u = 0; u < rows[i].length; ++u){
                     user_set.add(rows[i][u].USER_ID);
                 }
             }
-            console.log("aaaaaaaa");
-            console.log(user_set);
             var in_sql2 = "SELECT BOOK_ID FROM USER_BOOKLIST_TB WHERE USER_ID = ?; ";
             var sqls2 = "";
 
@@ -206,12 +200,64 @@ router.post('/recommend', (req, res) => {
             user_list.forEach((item) => {
                 sqls2 += mysql.format(in_sql2, item);
             });
-            console.log(sqls2);
-            console.log(user_list);
             conn.query(sqls2, (error, rows) => {
-                console.log(rows);
+                var book_dict = {};
+                var book_list = [];
 
-                // res.status(200).json(rows[0]);
+                for(var i = 0; i < rows.length; ++i){
+                    for(var u = 0; u < rows[i].length; ++u){
+                        if(rows[i][u].BOOK_ID in book_dict){
+                            book_dict[rows[i][u].BOOK_ID] += 1;
+                        }
+                        else{
+                            book_dict[rows[i][u].BOOK_ID] = 1;
+                        }
+                    }
+                }
+                for(var i in book_dict){
+                    book_list.push([book_dict[i], i]);
+                }
+                book_list.sort();
+
+                var in_sql3 = "SELECT * FROM BOOK_TB WHERE BOOK_ID = ?;";
+                var sqls3 = "";
+                var book_params = [];
+
+                for(var i = book_list.length - 1; i >= 0; --i){
+                    book_params.push(parseInt(book_list[i][1]));
+                }
+
+                book_params.forEach((item) =>{
+                    sqls3 += mysql.format(in_sql3, item);
+                });
+
+                conn.query(sqls3, (errors, rows) => {
+                    console.log(rows);
+                    if(tag === "전체"){
+                        var ret = [];
+                        for(var i = 0; i < rows.length; ++i){
+                            ret.push(rows[i][0]);
+                        }
+                        res.status(200).json(ret);
+                    }
+                    else{
+                        var ret = []
+                        var tags = tag.split("|");
+                        
+                        for(var i = 0; i < rows.length; ++i){
+                            var incl = false;
+
+                            for(var u = 0; u < tags.length; ++u){
+                                if(rows[i][0].BOOK_TAG === tags[u])
+                                    incl = true;
+                            }
+                            if(incl === true){
+                                ret.push(rows[i][0]);
+                            }
+                        }
+                        res.status(200).json(ret);
+                    }
+                });
             });
         });
     });
