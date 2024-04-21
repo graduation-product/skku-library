@@ -54,6 +54,12 @@ CREATE TABLE IF NOT EXISTS REVIEW_TB(
     PRIMARY KEY(REVIEW_ID)
 );
 
+CREATE TABLE IF NOT EXISTS LIKE_TB(
+    USER_ID             INT             NOT NULL,
+    REVIEW_ID           INT             NOT NULL,
+    PRIMARY KEY(USER_ID, REVIEW_ID)
+);
+
 INSERT INTO USER_TB VALUES(1, "2019314665", "rladbgus@g.skku.edu", "김유현", "1234");
 INSERT INTO USER_TB VALUES(2, "2019310123", "dbrhkdgh@g.skku.edu", "유광호", "1234");
 INSERT INTO USER_TB VALUES(3, "2019311392", "rlatkdduq@g.skku.edu", "김상엽", "1234");
