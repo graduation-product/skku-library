@@ -34,51 +34,59 @@ function ReviewPage() {
   }, []);
 
   return (
-    <div className="col-9 d-flex flex-column">
-      <div className="d-flex justify-content-between align-items-center pb-4">
-        <div>
-          <button type="button" className="btn-back" onClick={() => back()}>
-            <BsChevronLeft
-              style={{ marginRight: "7px", marginBottom: "5px" }}
-            />
-            후기
-          </button>
-        </div>
-        <div className="fs-3 fw-bold">
-          [{review.REVIEW_BOOK_TITLE}] {review.REVIEW_TITLE}
-        </div>
-        <div>
-          <button
-            type="button"
-            className="btn-back"
-            style={{ visibility: "hidden" }}
-          >
-            <BsChevronLeft
-              style={{ marginRight: "7px", marginBottom: "5px" }}
-            />
-            후기
-          </button>
-        </div>
-      </div>
-      <div className="divider"></div>
-      <div className="d-flex flex-column">
-        <div className="d-flex justify-content-end align-items-center py-2">
-          <span className="fs-6 pe-2">{review.REVIEW_AUTHOR_NAME}</span>
-          <span className="fs-6 pe-2">{review.REVIEW_DATE.slice(0, 10)}</span>
-        </div>
-        <div className="article-body">{review.REVIEW_CONTENT}</div>
-        <div className="article-bottom-list">
-          <div className="d-flex gap-3">
-            <div id="like-icon" style={{ cursor: "pointer" }}>
-              <span>
-                {1 ? <FaThumbsUp size={25} /> : <FaRegThumbsUp size={25} />}
-              </span>
-              <span>좋아요</span>
+    <>
+      {review && (
+        <div className="col-9 d-flex flex-column">
+          <div className="d-flex justify-content-between align-items-center pb-4">
+            <div>
+              <button type="button" className="btn-back" onClick={() => back()}>
+                <BsChevronLeft
+                  style={{ marginRight: "7px", marginBottom: "5px" }}
+                />
+                후기
+              </button>
+            </div>
+            <div className="fs-3 fw-bold">
+              [{review.REVIEW_BOOK_TITLE}] {review.REVIEW_TITLE}
+            </div>
+            <div>
+              <button
+                type="button"
+                className="btn-back"
+                style={{ visibility: "hidden" }}
+              >
+                <BsChevronLeft
+                  style={{ marginRight: "7px", marginBottom: "5px" }}
+                />
+                후기
+              </button>
+            </div>
+          </div>
+          <div className="divider"></div>
+          <div className="d-flex flex-column">
+            <div className="d-flex justify-content-end align-items-center py-2">
+              <span className="fs-6 pe-2">{review.REVIEW_AUTHOR_NAME}</span>
+              {review.REVIEW_DATE && (
+                <span className="fs-6 pe-2">
+                  {review.REVIEW_DATE.slice(0, 10)}
+                </span>
+              )}
+            </div>
+            <div className="article-body">{review.REVIEW_CONTENT}</div>
+            <div className="article-bottom-list">
+              <div className="d-flex gap-3">
+                <div id="like-icon" style={{ cursor: "pointer" }}>
+                  <span>
+                    {1 ? <FaThumbsUp size={25} /> : <FaRegThumbsUp size={25} />}
+                  </span>
+                  <span>좋아요</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 

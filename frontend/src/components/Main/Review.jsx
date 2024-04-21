@@ -1,6 +1,8 @@
 import { BsFillHandThumbsUpFill, BsEyeFill } from "react-icons/bs";
+import { PiPencilLineBold } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Button from "react-bootstrap/Button";
 import axios from "axios";
 
 function Review() {
@@ -25,8 +27,22 @@ function Review() {
     getReviewList();
   }, []);
 
+  const onClickWrite = () => {
+    navigate(`/write`);
+  };
+
   return (
     <div className="col-9 d-flex flex-column align-items-center justify-content-center">
+      <div>
+        <Button
+          variant="outline-success"
+          className="mb-1"
+          onClick={() => onClickWrite()}
+        >
+          <PiPencilLineBold className="me-2" />
+          후기 작성하기
+        </Button>
+      </div>
       {reviewList.map((review, idx) => (
         <div
           className="w-100 p-4 d-flex align-items-center border-bottom"
