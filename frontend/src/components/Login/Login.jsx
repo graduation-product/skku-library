@@ -1,69 +1,48 @@
 import React, { useState } from "react";
+import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginCheck, setLoginCheck] = useState(false); // 로그인 상태 체크
-
-  const navigate = useNavigate();
-
-  const handleLogin = async (event) => {
-    // 로그인 처리 로직을 구현합니다.
-    event.preventDefault();
-    await new Promise((r) => setTimeout(r, 1000));
-
-    const response = await fetch("로그인 서버 주소", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    });
-    const result = await response.json();
-
-    if (response.status === 200) {
-      setLoginCheck(false);
-      // Store token in local storage
-      sessionStorage.setItem("token", result.token);
-      sessionStorage.setItem("email", result.email); // 여기서 userid를 저장합니다.
-      sessionStorage.setItem("role", result.role); // 여기서 role를 저장합니다.
-      sessionStorage.setItem("storeid", result.storeId); // 여기서 role를 저장합니다.
-      console.log("로그인성공, 이메일주소:" + result.email);
-      navigate("/"); // 로그인 성공시 홈으로 이동합니다.
-    } else {
-      setLoginCheck(true);
-    }
+  const [inputId, setInputId] = useState("");
+  const [inputPw, setInputPw] = useState("");
+  const handleInputId = (e) => {
+    setInputId(e.target.value);
   };
 
+  const handleInputPw = (e) => {
+    setInputPw(e.target.value);
+  };
+  const onClickLogin = () => {
+    console.log("click login");
+  };
   return (
-    <div className="login-container">
-      <form className="login-form" onSubmit={handleLogin}>
-        <label htmlFor="username">이메일</label>
+    <div className="w-100 h-100 d-flex flex-column justify-items-center align-items-center">
+      <h2 className="mb-4">Login</h2>
+      <div>
+        <label htmlFor="input_id">ID : </label>
         <input
           type="text"
-          id="username"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          name="input_id"
+          value={inputId}
+          onChange={handleInputId}
         />
-
-        <label htmlFor="password">비밀번호</label>
+      </div>
+      <div>
+        <label htmlFor="input_pw">PW : </label>
         <input
           type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          name="input_pw"
+          value={inputPw}
+          onChange={handleInputPw}
         />
-        {loginCheck && (
-          <label style={{ color: "red" }}>
-            이메일 혹은 비밀번호가 틀렸습니다.
-          </label>
-        )}
-        <button onClick={handleLogin}>로그인</button>
-      </form>
+      </div>
+      <Button
+        variant="outline-success"
+        className="my-4"
+        onClick={() => onClickLogin()}
+      >
+        로그인
+      </Button>
     </div>
   );
 }

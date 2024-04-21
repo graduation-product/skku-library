@@ -51,7 +51,7 @@ function Header() {
           </div>
           <Link
             style={{ textDecoration: "none", flex: 1 }}
-            to={"/user"}
+            to={"/login"}
             className="d-flex justify-content-end"
           >
             <FiUser size={30} color="white" />

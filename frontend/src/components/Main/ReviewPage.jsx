@@ -5,7 +5,9 @@ import {
   BsPencilFill,
   BsTrash,
 } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import "../../styles/main.css";
 
 function ReviewPage() {
@@ -13,6 +15,24 @@ function ReviewPage() {
   const back = () => {
     navigate("/review/");
   };
+  const { reviewid } = useParams();
+  const [review, setReview] = useState([]);
+  const server_url = process.env.REACT_APP_SERVER_URL;
+
+  useEffect(() => {
+    const getReview = async () => {
+      const postUrl = server_url + "/reviews/detail";
+      try {
+        const response = await axios.post(postUrl, { review_id: reviewid });
+        if (response.status === 200) {
+          console.log(response.data);
+          setReview(response.data);
+        }
+      } catch (error) {}
+    };
+    getReview();
+  }, []);
+
   return (
     <div className="col-9 d-flex flex-column">
       <div className="d-flex justify-content-between align-items-center pb-4">
@@ -21,10 +41,12 @@ function ReviewPage() {
             <BsChevronLeft
               style={{ marginRight: "7px", marginBottom: "5px" }}
             />
-            리뷰
+            후기
           </button>
         </div>
-        <div className="fs-3 fw-bold"> 게시판</div>
+        <div className="fs-3 fw-bold">
+          [{review.REVIEW_BOOK_TITLE}] {review.REVIEW_TITLE}
+        </div>
         <div>
           <button
             type="button"
@@ -34,23 +56,17 @@ function ReviewPage() {
             <BsChevronLeft
               style={{ marginRight: "7px", marginBottom: "5px" }}
             />
-            리뷰
+            후기
           </button>
         </div>
       </div>
       <div className="divider"></div>
       <div className="d-flex flex-column">
         <div className="d-flex justify-content-end align-items-center py-2">
-          <span className="fs-6 pe-2">작성자</span>
-          <span className="fs-6 pe-2">날짜</span>
+          <span className="fs-6 pe-2">{review.REVIEW_AUTHOR_NAME}</span>
+          <span className="fs-6 pe-2">{review.REVIEW_DATE.slice(0, 10)}</span>
         </div>
-        <div className="article-body">
-          글
-          {/* <span
-            dangerouslySetInnerHTML={{ __html: article.body }}
-            className="article-info"
-          ></span> */}
-        </div>
+        <div className="article-body">{review.REVIEW_CONTENT}</div>
         <div className="article-bottom-list">
           <div className="d-flex gap-3">
             <div id="like-icon" style={{ cursor: "pointer" }}>

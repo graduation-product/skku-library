@@ -7,7 +7,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function Rank() {
-  const [sort, setSort] = useState("전체");
+  const [sort, setSort] = useState("none");
   const [bookList, setBookList] = useState([]);
   const server_url = process.env.REACT_APP_SERVER_URL;
   useEffect(() => {
