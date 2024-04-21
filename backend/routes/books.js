@@ -147,7 +147,6 @@ router.post('/detail', (req, res) => {
 // REQUEST:
 //   body:{
 //      user_id:   -user_id-(int),
-//      tag:       -tag-(string)
 //   }
 // 
 // RESULT
@@ -161,7 +160,6 @@ router.post('/detail', (req, res) => {
 router.post('/recommend', (req, res) => {
 
     const user_id = req.body.user_id;
-    const tag = req.body.tag;
 
     var sql = "SELECT BOOK_ID FROM USER_BOOKLIST_TB WHERE USER_ID = ?";
     var params = [user_id];
@@ -233,30 +231,13 @@ router.post('/recommend', (req, res) => {
 
                 conn.query(sqls3, (errors, rows) => {
                     console.log(rows);
-                    if(tag === "전체"){
-                        var ret = [];
-                        for(var i = 0; i < rows.length; ++i){
-                            ret.push(rows[i][0]);
-                        }
-                        res.status(200).json(ret);
+                    
+                    var ret = [];
+                    for(var i = 0; i < rows.length; ++i){
+                        ret.push(rows[i][0]);
                     }
-                    else{
-                        var ret = []
-                        var tags = tag.split("|");
-                        
-                        for(var i = 0; i < rows.length; ++i){
-                            var incl = false;
-
-                            for(var u = 0; u < tags.length; ++u){
-                                if(rows[i][0].BOOK_TAG === tags[u])
-                                    incl = true;
-                            }
-                            if(incl === true){
-                                ret.push(rows[i][0]);
-                            }
-                        }
-                        res.status(200).json(ret);
-                    }
+                    res.status(200).json(ret);
+                    
                 });
             });
         });
