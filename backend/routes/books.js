@@ -36,7 +36,7 @@ router.post('/ranking', (req, res) => {
     var sql;
     var params = [tag];
 
-    if(tag === "none"){
+    if(tag === "전체"){
         sql = "SELECT * FROM BOOK_TB ORDER BY BOOK_BORROWED DESC";
     }
     else{

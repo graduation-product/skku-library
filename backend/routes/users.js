@@ -67,6 +67,32 @@ router.post('/login', (req, res) => {
     });
 });
 
+//////////////////
+// username API //
+//////////////////
+// REQUEST:
+//   body:{
+//      user_id:  -user id-(int)
+//   }
+// 
+// RESULT:
+//   {user_name: -user name-(string)}
+router.post('/name', (req, res) => {
+    console.log(req.body);
+
+    const user_id = req.body.user_id;
+
+    var sql = "SELECT USER_NAME FROM USER_TB WHERE USER_ID = ?";
+    var params = [user_id];
+
+    conn.query(sql, params, (error, rows) => {
+        if (error)
+            throw error;
+
+        res.status(200).json({"user_name" : rows[0].USER_NAME});
+        
+    });
+});
 
 
 module.exports = router;
