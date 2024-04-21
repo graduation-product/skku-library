@@ -133,24 +133,39 @@ router.post('/detail', (req, res) => {
 /////////////////////
 // REQUEST:
 //   body:{
-//      review_id:       -review id-(int),
+//      user_id:         -user id-(int),
+//      review_id:       -review id-(int)
 //   }
 // 
 // RESULT
 //   {"result" : "success"}
 // 
 router.post('/like', (req, res) => {
+    const user_id = req.body.user_id;
     const review_id = req.body.review_id;
 
-    var sql = "UPDATE REVIEW_TB SET REVIEW_LIKE = REVIEW_LIKE + 1 WHERE REIVEW_ID = ?";
-    var params = [review_id];
+    var sql = "SELECT COUNT(*) AS CNT FROM LIKE_TB WHERE USER_ID = ? and REVIEW_ID = ?";
+    var params = [user_id, review_id];
 
 
     conn.query(sql, params, (error, rows) => {
         if(error)
             throw error;
         
-        res.status(200).json({"result" : "success"});
+        if(rows[0].CNT === 0){
+            var in_sql = "UPDATE REVIEW_TB SET REVIEW_LIKE = REVIEW_LIKE + 1 WHERE REVIEW_ID = ?; INSERT INTO LIKE_TB VALUES(?, ?);";
+            var in_params = [review_id, user_id, review_id];
+
+            conn.query(in_sql, in_params, (error, rows) => {
+                if(error)
+                    throw error;
+
+                res.status(200).json({"result" : "success"});
+            });
+        }
+        else{
+            res.status(200).json({"result" : "fail: duplicated"});
+        }
     });
 });
 
@@ -168,7 +183,7 @@ router.post('/like', (req, res) => {
 router.post('/view', (req, res) => {
     const review_id = req.body.review_id;
 
-    var sql = "UPDATE REVIEW_TB SET REVIEW_VIEW = REVIEW_VIEW + 1 WHERE REIVEW_ID = ?";
+    var sql = "UPDATE REVIEW_TB SET REVIEW_VIEW = REVIEW_VIEW + 1 WHERE REVIEW_ID = ?";
     var params = [review_id];
 
 
