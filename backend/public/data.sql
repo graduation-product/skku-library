@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS BOOK_TB(
     BOOK_PUBLISHER      VARCHAR(60)             ,
     BOOK_ISBN           VARCHAR(15)     NOT NULL,
     BOOK_CLASSIFIER     VARCHAR(45)             ,
-    BOOK_IMAGE          VARCHAR(60)             ,
+    BOOK_IMAGE          VARCHAR(100)             ,
     BOOK_TAG            VARCHAR(30)             ,
     BOOK_BORROWED       INT             DEFAULT 0,
     PRIMARY KEY(BOOK_ID)
