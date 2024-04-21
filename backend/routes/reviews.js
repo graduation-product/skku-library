@@ -181,6 +181,41 @@ router.post('/like', (req, res) => {
   });
 });
 
+
+///////////////////
+// like test API //
+///////////////////
+// REQUEST:
+//   body:{
+//      user_id:         -user id-(int),
+//      review_id:       -review id-(int)
+//   }
+// 
+// RESULT
+//   {"result" : 1 || 0}
+// 
+router.post('/testlike', (req, res) => {
+  const user_id = req.body.user_id;
+  const review_id = req.body.review_id;
+
+  var sql = "SELECT COUNT(*) AS CNT FROM LIKE_TB WHERE USER_ID = ? and REVIEW_ID = ?";
+  var params = [user_id, review_id];
+
+
+  conn.query(sql, params, (error, rows) => {
+      if(error)
+          throw error;
+      
+      if(rows[0].CNT === 0){
+          res.status(200).json({"result" : 0});
+      }
+      else{
+          res.status(200).json({"result" : 1});
+      }
+  });
+});
+
+
 /////////////////////
 // view update API //
 /////////////////////
