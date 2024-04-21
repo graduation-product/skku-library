@@ -1,13 +1,7 @@
-import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
-import {
-  BsThreeDotsVertical,
-  BsChevronLeft,
-  BsPencilFill,
-  BsTrash,
-} from "react-icons/bs";
+import { BsChevronLeft } from "react-icons/bs";
 import Button from "react-bootstrap/Button";
 import { PiPencilLineBold } from "react-icons/pi";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ReactQuill from "react-quill";
 import { EditorModules } from "./editor";
@@ -19,18 +13,19 @@ function ReviewPage() {
   const back = () => {
     navigate("/review/");
   };
-  const [review, setReview] = useState([]);
   const [title, setTitle] = useState("");
   const [bookTitle, setBookTitle] = useState("");
   const [content, setContent] = useState("");
-  const loginId = "1";
   const server_url = process.env.REACT_APP_SERVER_URL;
+
+  const location = useLocation();
+  const user_id = location.state.loginId;
 
   const onClickWrite = async () => {
     if (title !== "" && bookTitle !== "" && content !== "") {
       const postUrl = server_url + "/reviews/register";
       await axios.post(postUrl, {
-        author: loginId,
+        author: user_id,
         title: title,
         book_title: bookTitle,
         content: content,

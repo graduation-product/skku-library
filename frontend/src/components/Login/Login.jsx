@@ -10,9 +10,11 @@ function Login() {
   const [inputId, setInputId] = useState("");
   const [inputPw, setInputPw] = useState("");
   const [isLogin, setIsLogin] = useState(false);
+  const [loginId, setLoginId] = useState("");
   useEffect(() => {
-    if (localStorage.getItem("id") !== null) {
+    if (sessionStorage.getItem("id") !== null) {
       setIsLogin(true);
+      setLoginId(sessionStorage.getItem("id"));
     }
   }, []);
   const handleInputId = (e) => {
@@ -32,8 +34,7 @@ function Login() {
         })
         .then((res) => {
           console.log(res.data);
-          localStorage.clear();
-          localStorage.setItem("id", res.data.user_id);
+          sessionStorage.setItem("id", res.data.user_id);
           window.location.replace("http://localhost:3000/");
         })
         .catch((err) => {
@@ -45,9 +46,15 @@ function Login() {
       alert("모든 내용을 입력해주세요");
     }
   };
+
+  const onClickLogOut = () => {
+    sessionStorage.clear();
+    window.location.reload();
+  };
+
   return (
     <>
-      {isLogin !== false && (
+      {isLogin === false ? (
         <div className="w-100 h-100 d-flex flex-column justify-items-center align-items-center">
           <h2 className="mb-4">Login</h2>
           <div>
@@ -82,6 +89,14 @@ function Login() {
             로그인
           </Button>
         </div>
+      ) : (
+        <Button
+          variant="outline-success"
+          className="my-4"
+          onClick={() => onClickLogOut()}
+        >
+          로그아웃
+        </Button>
       )}
     </>
   );

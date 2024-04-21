@@ -11,6 +11,15 @@ function Review() {
     navigate(`/review/${id}`);
   };
   const [reviewList, setReviewList] = useState([]);
+  const [isLogin, setIsLogin] = useState(false);
+  const [loginId, setLoginId] = useState("");
+
+  useEffect(() => {
+    if (sessionStorage.getItem("id") !== null) {
+      setIsLogin(true);
+      setLoginId(sessionStorage.getItem("id"));
+    }
+  }, []);
 
   const server_url = process.env.REACT_APP_SERVER_URL;
   useEffect(() => {
@@ -28,7 +37,16 @@ function Review() {
   }, []);
 
   const onClickWrite = () => {
-    navigate(`/write`);
+    if (isLogin) {
+      navigate(`/write`, {
+        state: {
+          loginId: loginId,
+        },
+      });
+    } else {
+      alert("로그인 시 이용가능 합니다.");
+      navigate(`/login`);
+    }
   };
 
   return (
