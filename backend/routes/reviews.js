@@ -19,6 +19,7 @@ router.get('/', function(req, res, next) {
 //   body:{
 //      author:     -review author-(int),
 //      title:      -review title-(string),
+//      book_title: -review book title-(string),
 //      content:    -review content-(string),
 //   }
 // 
@@ -29,6 +30,7 @@ router.post('/register', (req, res) => {
     console.log(req.body);
     const auth = req.body.author;
     const title = req.body.title;
+    const book_title = req.body.book_title;
     const content = req.body.content;
 
     var sql = "SELECT MAX(REVIEW_ID) AS MRI FROM REVIEW_TB";
@@ -38,8 +40,8 @@ router.post('/register', (req, res) => {
             throw error;
         
         var cur_max = rows[0].MRI
-        var in_sql = "INSERT INTO REVIEW_TB VALUES(?, ?, ?, ?, NOW(), ?)";
-        var in_params = [cur_max + 1, auth, title, content, 0];
+        var in_sql = "INSERT INTO REVIEW_TB VALUES(?, ?, ?, ?, ?, NOW(), ?, ?)";
+        var in_params = [cur_max + 1, auth, title, book_title, content, 0, 0];
 
         conn.query(in_sql, in_params, (error, rows) => {
             if(error)
@@ -69,9 +71,11 @@ router.post('/register', (req, res) => {
 //          * 저자 번호(REVIEW_AUTHOR)
 //          * 저자 이름(REVIEW_AUTHOR_NAME)
 //          * 제목(REVIEW_TITLE)
+//          * 책 제목(REVIEW_BOOK_TITLE)
 //          * 내용(REVIEW_CONTENT)
 //          * 날짜(REVIEW_DATE)
 //          * 좋아요 수(REVIEW_LIKE)
+//          * 조회 수(REVIEW_VIEW)
 //        정보를 가지고 있음
 
 router.post('/list', (req, res) => {

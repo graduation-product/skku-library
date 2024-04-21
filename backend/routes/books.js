@@ -176,24 +176,43 @@ router.post('/recommend', (req, res) => {
         var arr = [];
 
         for(var i = 0; i < rows.length; ++i){
-            arr.push(rows[i].BOOK_ID);
+            arr.push(rows[i].BOOK_ID);    
         }
         console.log(arr);
         // 본인이 읽은 책을 읽은 다른 유저
-        var in_sql = "SELECT USER_ID FROM USER_BOOKLIST_TB WHERE BOOK_ID = ? and USER_ID <> " + user_id + ";";
-        var params = "";
+        var in_sql = "SELECT USER_ID FROM USER_BOOKLIST_TB WHERE BOOK_ID = ? and USER_ID <> " + user_id + "; ";
+        var sqls = "";
         arr.forEach((item) =>{
-            params += mysql.format(in_sql, item);
+            sqls += mysql.format(in_sql, item);
         });
-
-        conn.query(in_sql, arr, (error, rows) => {
+        console.log(sqls);
+        conn.query(sqls, (error, rows) => {
+            user_set = new Set();
             user_list = [];
             console.log(rows);
             for(var i = 0; i < rows.length; ++i){
-                user_list.push(rows[i].USER_ID);
+                for(var u = 0; u < rows[i].length; ++u){
+                    user_set.add(rows[i][u].USER_ID);
+                }
             }
+            console.log("aaaaaaaa");
+            console.log(user_set);
+            var in_sql2 = "SELECT BOOK_ID FROM USER_BOOKLIST_TB WHERE USER_ID = ?; ";
+            var sqls2 = "";
+
+            for(const item of user_set){
+                user_list.push(item);
+            }
+            user_list.forEach((item) => {
+                sqls2 += mysql.format(in_sql2, item);
+            });
+            console.log(sqls2);
             console.log(user_list);
-            res.status(200).json(rows[0]);
+            conn.query(sqls2, (error, rows) => {
+                console.log(rows);
+
+                // res.status(200).json(rows[0]);
+            });
         });
     });
 });
