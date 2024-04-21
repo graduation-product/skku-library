@@ -45,9 +45,11 @@ CREATE TABLE IF NOT EXISTS REVIEW_TB(
     REVIEW_AUTHOR       INT             NOT NULL,
     REVIEW_AUTHOR_NAME  VARCHAR(100)    NOT NULL,
     REVIEW_TITLE        VARCHAR(100)    NOT NULL,
+    REVIEW_BOOK_TITLE   vARCHAR(100)    NOT NULL,
     REVIEW_CONTENT      VARCHAR(2000)   NOT NULL,
     REVIEW_DATE         TIMESTAMP       ,
     REVIEW_LIKE         INT             DEFAULT 0,
+    REVIEW_VIEW         INT             DEFAULT 0,
     PRIMARY KEY(REVIEW_ID)
 );
 
@@ -64,7 +66,7 @@ INSERT INTO BOOK_TB VALUES(1, "(EBS 다큐프라임) 자본주의 : 금융·소�
 INSERT INTO BOOK_TB VALUES(2, "컴퓨터시스템", "Bryant, Randal; O'Hallaron, David Richard; 김형신", "Pearson", "9791185475219", "004 B915c1 2016", "https://image.yes24.com/goods/31950404/XL", "컴퓨터", 3);
 INSERT INTO BOOK_TB VALUES(3, "운영체제 : 아주 쉬운 세 가지 이야기", "Arpaci-Dusseau, Remzi H.; Arpaci-Dusseau, Andrea C.; 원유집; 박민규; 이성진", "홍릉", "	9791156007937", "005.43 A772o7 2020", "https://image.yes24.com/goods/93738334/XL", "컴퓨터", 1);
 
-INSERT INTO REVIEW_TB VALUES(1, 2, "유광호", "운영체제 책 후기입니다", "재미있었습니다", "2024-04-20 12:42:34", 0);
+INSERT INTO REVIEW_TB VALUES(1, 2, "유광호", "운영체제 책 후기입니다", "운영체제 : 아주 쉬운 세 가지 이야기", "재미있었습니다", "2024-04-20 12:42:34", 0, 0);
 
 INSERT INTO USER_BOOKLIST_TB VALUES(1, 2);
 INSERT INTO USER_BOOKLIST_TB VALUES(2, 2);
