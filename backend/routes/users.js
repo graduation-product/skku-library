@@ -39,17 +39,18 @@ router.post('/login', (req, res) => {
         if (error)
             throw error;
 
-        if (rows[0].cnt == 1) {
+        if (rows[0].CNT == 1) {
             var in_sql = "SELECT USER_ID, USER_PASSWORD FROM USER_TB WHERE USER_NUMBER=?";
             var in_params = [user_number];
             conn.query(in_sql, in_params, (error, rows) => {
+
                 if (error)
                     throw error;
 
-                var cur_id = rows[0].user_id;
-                var cur_pswd = rows[0].user_password;
-
-                if (cur_pswd === pswd) {
+                var cur_id = rows[0].USER_ID;
+                var cur_pswd = rows[0].USER_PASSWORD;
+                
+                if (cur_pswd == pswd) {
                     // success
                     res.status(200).json({ result: "success", user_id: cur_id });
                 }
