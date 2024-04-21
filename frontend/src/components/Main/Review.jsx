@@ -7,7 +7,16 @@ import axios from "axios";
 
 function Review() {
   const navigate = useNavigate();
+  const server_url = process.env.REACT_APP_SERVER_URL;
+
   const onReview = (id) => {
+    const upView = async () => {
+      const postUrl = server_url + "/reviews/view";
+      try {
+        await axios.post(postUrl, { review_id: id });
+      } catch (error) {}
+    };
+    upView();
     navigate(`/review/${id}`);
   };
   const [reviewList, setReviewList] = useState([]);
@@ -21,7 +30,6 @@ function Review() {
     }
   }, []);
 
-  const server_url = process.env.REACT_APP_SERVER_URL;
   useEffect(() => {
     const getReviewList = async () => {
       const postUrl = server_url + "/reviews/list";

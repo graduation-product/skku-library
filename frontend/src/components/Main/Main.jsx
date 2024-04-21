@@ -1,8 +1,11 @@
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+
 function Main() {
-  return (
-    <div className="col-9 d-flex justify-content-center">
-      <div>메인입니다.</div>
-    </div>
-  );
+  const navigate = useNavigate();
+  useEffect(() => {
+    navigate("/rank");
+  }, []);
+  return <div className="col-9 d-flex justify-content-center"></div>;
 }
 export default Main;

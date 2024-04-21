@@ -11,10 +11,21 @@ function Login() {
   const [inputPw, setInputPw] = useState("");
   const [isLogin, setIsLogin] = useState(false);
   const [loginId, setLoginId] = useState("");
+  const [username, setUsername] = useState();
   useEffect(() => {
+    const getUsername = async (id) => {
+      const postUrl = server_url + "/users/name";
+      try {
+        const response = await axios.post(postUrl, { user_id: id });
+        if (response.status === 200) {
+          setUsername(response.data.user_name);
+        }
+      } catch (error) {}
+    };
     if (sessionStorage.getItem("id") !== null) {
       setIsLogin(true);
       setLoginId(sessionStorage.getItem("id"));
+      getUsername(sessionStorage.getItem("id"));
     }
   }, []);
   const handleInputId = (e) => {
@@ -90,13 +101,20 @@ function Login() {
           </Button>
         </div>
       ) : (
-        <Button
-          variant="outline-success"
-          className="my-4"
-          onClick={() => onClickLogOut()}
-        >
-          로그아웃
-        </Button>
+        <>
+          {username && (
+            <div className="d-flex flex-column">
+              <h3>안녕하세요 ! {username}님 </h3>
+              <Button
+                variant="outline-success"
+                className="my-4"
+                onClick={() => onClickLogOut()}
+              >
+                로그아웃
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </>
   );

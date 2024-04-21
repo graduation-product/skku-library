@@ -15,7 +15,7 @@ function Rank() {
     const getBookList = async () => {
       const postUrl = server_url + "/books/ranking";
       try {
-        const response = await axios.post(postUrl, { tag: "none" });
+        const response = await axios.post(postUrl, { tag: "전체" });
         if (response.status === 200) {
           setBookList(response.data);
           const bookTags = [...new Set(response.data.map((bk) => bk.BOOK_TAG))];
