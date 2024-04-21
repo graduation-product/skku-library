@@ -1,10 +1,5 @@
 import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
-import {
-  BsThreeDotsVertical,
-  BsChevronLeft,
-  BsPencilFill,
-  BsTrash,
-} from "react-icons/bs";
+import { BsChevronLeft } from "react-icons/bs";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -17,6 +12,7 @@ function ReviewPage() {
   };
   const { reviewid } = useParams();
   const [review, setReview] = useState([]);
+  const [isLike, setIsLike] = useState(0);
   const server_url = process.env.REACT_APP_SERVER_URL;
 
   useEffect(() => {
@@ -30,8 +26,41 @@ function ReviewPage() {
         }
       } catch (error) {}
     };
+    const checkLike = async (id) => {
+      const postUrl = server_url + "/reviews/testlike";
+      try {
+        const response = await axios.post(postUrl, {
+          user_id: id,
+          review_id: reviewid,
+        });
+        if (response.status === 200) {
+          console.log(response.data.result);
+          setIsLike(response.data.result);
+        }
+      } catch (error) {}
+    };
     getReview();
+    if (sessionStorage.getItem("id") !== null) {
+      checkLike(sessionStorage.getItem("id"));
+    } else {
+      checkLike(0);
+    }
   }, []);
+
+  const onLike = () => {
+    const pushLike = async (id) => {
+      const postUrl = server_url + "/reviews/like";
+      try {
+        await axios.post(postUrl, { user_id: id, review_id: reviewid });
+      } catch (error) {}
+    };
+    if (sessionStorage.getItem("id") !== null) {
+      pushLike(sessionStorage.getItem("id"));
+      setIsLike((isLike + 1) % 2);
+    } else {
+      alert("로그인이 필요한 기능입니다.");
+    }
+  };
 
   return (
     <>
@@ -75,9 +104,17 @@ function ReviewPage() {
             <div className="article-body">{review.REVIEW_CONTENT}</div>
             <div className="article-bottom-list">
               <div className="d-flex gap-3">
-                <div id="like-icon" style={{ cursor: "pointer" }}>
+                <div
+                  id="like-icon"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => onLike()}
+                >
                   <span>
-                    {1 ? <FaThumbsUp size={25} /> : <FaRegThumbsUp size={25} />}
+                    {isLike ? (
+                      <FaThumbsUp size={25} />
+                    ) : (
+                      <FaRegThumbsUp size={25} />
+                    )}
                   </span>
                   <span>좋아요</span>
                 </div>
